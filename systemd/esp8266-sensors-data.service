@@ -1,0 +1,19 @@
+[Unit]
+Description=dockerized esp8266-sensors-data
+Requires=docker.service                                                                                                          $
+After=docker.service
+
+[Service]
+ExecStartPre=-/usr/bin/docker rm -f esp8266-sensors-instance
+ExecStartPre=-/usr/bin/docker pull andreymalyshenko/esp8266-sensors-data
+ExecStart=/usr/bin/docker run --name esp8266-sensors-instance -d -p 8080:5000 andreymalyshenko/esp8266-sensors-data
+ExecStartPost=/bin/sh -c 'while ! docker ps | grep esp8266-sensors-instance ; do sleep 1; done'
+ExecStop=/usr/bin/docker rm -f esp8266-sensors-instance
+TimeoutSec=0
+RemainAfterExit=no
+Restart=Always
+
+[Install]
+WantedBy=multi-user.target
+
+

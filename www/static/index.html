@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+
+<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:300" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="site.css">
+
+<body>
+	<div class="row text-center div-time">
+		<div class="col-sm-12">
+			<span id="span-time">TIME</span>
+		</div>
+	</div>
+	<div class="row text-center div-nums">
+		<div class="col-sm-4">
+			<small><i class="glyphicon glyphicon-certificate"></i></small>
+			<span id="span-temp">TEMP</span>
+			<small>&#8451;</small>
+		</div>
+		<div class="col-sm-4">
+			<small><i class="glyphicon glyphicon-tint"></i></small>
+			<span id="span-humi">HUMIDITY</span>
+			<small>%</small>
+		</div>
+		<div class="col-sm-4">
+			<small><i class="glyphicon glyphicon-tree-conifer"></i></small>
+			<span id="span-cdio">CO2</span>
+			<small>ppm</small>
+		</div>
+	</div>
+	<div class="row text-center div-charts">
+		<div class="col-sm-4">	
+			<div class="div-chart" id="chart-temp"></div>
+		</div>
+		<div class="col-sm-4">	
+			<div class="div-chart" id="chart-humi"></div>
+		</div>
+		<div class="col-sm-4">	
+			<div class="div-chart" id="chart-cdio"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12 text-center">	
+			<small>Updated</small>
+			<span id="span-updt"></span>
+		</div>
+	</div>
+
+	<script src="app.js"></script>
+</body>
+</html>

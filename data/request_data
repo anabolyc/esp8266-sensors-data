@@ -1,0 +1,34 @@
+#!/bin/bash
+
+url=  db=
+
+while getopts u:d: opt; do
+  case $opt in
+  u)
+      url=$OPTARG
+      ;;
+  d)
+      db=$OPTARG
+      ;;
+  esac
+done
+
+shift $((OPTIND - 1))
+
+response=$(curl -s $url)
+
+error=$(echo "$response" | jq -r '.error')
+
+# echo "response: " "$response"
+
+if [ "$error" = 'null' ];
+then
+	temp=$(echo "$response" | jq -r '.temp')
+	humi=$(echo "$response" | jq -r '.humidity')
+	echo "temp = " "$temp" "; humidity = " "$humi"
+
+	sqlite3 $db "insert into sensors_data (date, temp, humi) values (CURRENT_TIMESTAMP, $temp, $humi)"
+else
+	echo "error: " "$error"
+fi
+
