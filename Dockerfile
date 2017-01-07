@@ -1,7 +1,9 @@
-FROM resin/rpi-raspbian:jessie
+FROM armhf/node:6.9.1-slim
 
 # required packages
-RUN apt-get update && apt-get DEBIAN_FRONTEND=noninteractive install sqlite3 jq curl -y && rm -rf /var/lib/apt/lists/*
+RUN apt-get update 
+RUN apt-get install sqlite3 jq curl -y
+RUN apt-get install python build-essential -y
 
 # prepare database
 COPY ./data/db.sql /data/db.sql
@@ -21,6 +23,12 @@ COPY ./www/static /www/static
 WORKDIR /www
 RUN npm install
 
+# cleanup
+RUN apt-get purge python build-essential -y
+RUN apt-get autoremove -y
+RUN rm -rf /var/lib/apt/lists/*
+
 EXPOSE 5000
 CMD start.sh
 
+# sudo ln -s "$(which nodejs)" /usr/bin/node
