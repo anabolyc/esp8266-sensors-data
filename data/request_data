@@ -25,9 +25,10 @@ if [ "$error" = 'null' ];
 then
 	temp=$(echo "$response" | jq -r '.temp')
 	humi=$(echo "$response" | jq -r '.humidity')
-	echo "temp = " "$temp" "; humidity = " "$humi"
+	cdio=$(echo "$response" | jq -r '.cdio')
+	echo "temp = " "$temp" "; humidity = " "$humi" "; cdio = " "$cdio"
 
-	sqlite3 $db "insert into sensors_data (date, temp, humi) values (CURRENT_TIMESTAMP, $temp, $humi)"
+	sqlite3 $db "insert into sensors_data (date, temp, humi, cdio) values (CURRENT_TIMESTAMP, $temp, $humi, $cdio)"
 else
 	echo "error: " "$error"
 fi
