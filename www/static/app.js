@@ -1,6 +1,5 @@
 // TODO: filter last 24 hrs
 $(document).ready(function() {
-    var show_second = true;
     var state = {
         data: [],
         lastdate: 0,
@@ -15,6 +14,15 @@ $(document).ready(function() {
         },
         lastdate: function() {
             return (this.last() || { date: 0 }).date;
+        },
+        formatTime: function(date, withSeconds) {
+            var hrs = date.getHours();
+            var mins = date.getMinutes()
+            var result =  
+                (hrs < 10 ? "0" : "") + hrs 
+                + (withSeconds ? ":" : " ")
+                + (mins < 10 ? "0" : "") + mins;
+            return result;
         }
     };
 
@@ -61,21 +69,23 @@ $(document).ready(function() {
                 return settings.colors[1];
         }
     };
+    
+    // TIME
+    (function (callback) {
+        callback();
+        window.setInterval(callback, 2000);
+    })(function() {
+        $("#span-time").text(state.formatTime(new Date(), true));
+        window.setTimeout(function() {
+            $("#span-time").text(state.formatTime(new Date(), false));
+        }, 500);
+    });
 
-    var intervalId = window.setInterval(function() {
-        var formatTime = function(date, withSeconds) {
-            var hrs = date.getHours();
-            var mins = date.getMinutes()
-            var result =  
-                (hrs < 10 ? "0" : "") + hrs 
-                + (withSeconds ? ":" : " ")
-                + (mins < 10 ? "0" : "") + mins;
-            return result;
-        };
-        // TIME
-        show_second = !show_second;
-        $("#span-time").text(formatTime(new Date(), show_second));
-        // SENSORS DATA
+    // SENSORS DATA
+    (function (callback) {
+        callback();
+        window.setInterval(callback, 60000);
+    })(function() {
         $.getJSON({
             url: "/data?from=" + state.lastdate(),
             success: function(data) {
@@ -92,7 +102,7 @@ $(document).ready(function() {
                     var last = state.last();
                     // UPDATE NUMS
                     if (last) {
-                        $("#span-updt").text(formatTime(new Date(last.date * 1000), true));
+                        $("#span-updt").text(state.formatTime(new Date(last.date * 1000), true));
                         $("#span-temp").text(last.temp).css("color", settings.getColor(last.temp, settings.temp));
                         $("#span-humi").text(last.humi).css("color", settings.getColor(last.humi, settings.humi));
                         $("#span-cdio").text(last.cdio).css("color", settings.getColor(last.cdio, settings.cdio));
@@ -109,19 +119,7 @@ $(document).ready(function() {
                                 data: state.data.map(function(point){ 
                                     return [point.date * 1000, point.temp]; 
                                 })
-                            }/*, {
-                                name: "TEMP-MIN",
-                                animation: false,
-                                color: settings.temp.colors[0],
-                                marker: false,
-                                data: [[state.data[0].date * 1000, settings.temp.min], [last.date * 1000, settings.temp.min]]
-                            }, {
-                                name: "TEMP-MAX",
-                                animation: false,
-                                color: settings.temp.colors[2],
-                                marker: false,
-                                data: [[state.data[0].date * 1000, settings.temp.max], [last.date * 1000, settings.temp.max]]
-                            }*/]
+                            }]
                         })),
                         Highcharts.chart('chart-humi', $.extend(chartOptions, {
                             series: [{
@@ -151,5 +149,5 @@ $(document).ready(function() {
                 }
             }
         })
-    }, 2000);
+    });
 });
