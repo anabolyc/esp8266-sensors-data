@@ -6,7 +6,7 @@ After=docker.service
 [Service]
 ExecStartPre=-/usr/bin/docker rm -f esp8266-sensors-instance
 ExecStartPre=-/usr/bin/docker pull andreymalyshenko/esp8266-sensors-data:armhf
-ExecStart=/usr/bin/docker run --name esp8266-sensors-instance -p 8080:5000 andreymalyshenko/esp8266-sensors-data:armhf
+ExecStart=/usr/bin/docker run --name esp8266-sensors-instance -p 8080:5000 -v /opt/esp8266-sensors-data:/data andreymalyshenko/esp8266-sensors-data:armhf 
 ExecStartPost=/bin/sh -c 'while ! docker ps | grep esp8266-sensors-instance ; do sleep 1; done'
 ExecStop=/usr/bin/docker rm -f esp8266-sensors-instance
 TimeoutSec=0

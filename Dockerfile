@@ -6,9 +6,7 @@ RUN apt-get install sqlite3 jq curl -y
 RUN apt-get install python build-essential -y
 
 # prepare database
-COPY ./data/db.sql /data/db.sql
-RUN sqlite3 /data/data.db < /data/db.sql
-RUN rm /data/db.sql
+COPY ./data/db.sql /var/db.sql
 
 # data script
 COPY ./data/request_data /usr/sbin/request_data
