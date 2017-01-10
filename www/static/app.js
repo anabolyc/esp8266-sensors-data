@@ -110,9 +110,9 @@ $(document).ready(function() {
                     // UPDATE NUMS
                     if (last) {
                         $("#span-updt").text(state.formatTime(new Date(last.date * 1000), true).asString);
-                        $("#span-temp").text(last.temp).css("color", settings.getColor(last.temp, settings.temp));
-                        $("#span-humi").text(last.humi).css("color", settings.getColor(last.humi, settings.humi));
-                        $("#span-cdio").text(last.cdio).css("color", settings.getColor(last.cdio, settings.cdio));
+                        $("#span-temp").text(Math.round(last.temp)).css("color", settings.getColor(last.temp, settings.temp));
+                        $("#span-humi").text(Math.round(last.humi)).css("color", settings.getColor(last.humi, settings.humi));
+                        $("#span-cdio").text(Math.round(last.cdio)).css("color", settings.getColor(last.cdio, settings.cdio));
                     }
 
                     // UPDATE CHARTS
