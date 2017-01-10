@@ -18,8 +18,8 @@ $(document).ready(function() {
             var hrs = date.getHours();
             var mins = date.getMinutes()
             var result =  {
-                hours: hrs,
-                minutes: mins,
+                hours: (hrs < 10 ? "0" : "") + hrs,
+                minutes: (mins < 10 ? "0" : "") + mins,
                 asString: (hrs < 10 ? "0" : "") + hrs 
                     + (withSeconds ? ":" : " ")
                     + (mins < 10 ? "0" : "") + mins 
