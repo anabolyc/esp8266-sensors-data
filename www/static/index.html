@@ -8,12 +8,27 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
 <link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="clock.css">
+
 <link rel="icon" type="image/png" href="favicon.png" />
 
 <body>
-	<div class="row text-center div-time">
-		<div class="col-sm-12">
-			<span id="span-time">TIME</span>
+	<div class="row text-center">
+		<div class="col-sm-8 div-time">
+            <span id="span-time-hr">HH</span><span id="span-time-dt">.</span><span id="span-time-mi">MM</span>
+		</div>
+        <div class="col-sm-4">
+			<article class="clock simple ">
+                <div class="hours-container">
+                    <div class="hours"></div>
+                </div>
+                <div class="minutes-container">
+                    <div class="minutes"></div>
+                </div>
+                <div class="seconds-container">
+                    <div class="seconds"></div>
+                </div>
+            </article>
 		</div>
 	</div>
 	<div class="row text-center div-nums">
@@ -52,5 +67,6 @@
 	</div>
 
 	<script src="app.js"></script>
+    <script src="clock.js"></script>
 </body>
 </html>

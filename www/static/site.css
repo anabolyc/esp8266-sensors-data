@@ -1,11 +1,21 @@
-*, html, body {
+body {
     background: black;
     color: #888;
     font-family: 'Source Code Pro', monospace;   
 }
 
 .div-time {
-    font-size: 20em;
+    font-size: 18em;
+    white-space: nowrap;
+}
+
+#span-time-dt {
+    font-size: 50%;
+    color: #222;
+}
+
+#span-time-dt.active {
+    color: #555;
 }
 
 .div-nums {
@@ -21,5 +31,4 @@
 .div-chart {
     width: 100%;
     height: 300px;    
-    /* border: 1px dotted red; */
 }

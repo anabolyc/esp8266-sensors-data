@@ -2,7 +2,6 @@
 $(document).ready(function() {
     var state = {
         data: [],
-        lastdate: 0,
         charts: [],
         last: function() {
             return this.data.length > 0 ? this.data[this.data.length - 1] : null;
@@ -18,10 +17,13 @@ $(document).ready(function() {
         formatTime: function(date, withSeconds) {
             var hrs = date.getHours();
             var mins = date.getMinutes()
-            var result =  
-                (hrs < 10 ? "0" : "") + hrs 
-                + (withSeconds ? ":" : " ")
-                + (mins < 10 ? "0" : "") + mins;
+            var result =  {
+                hours: hrs,
+                minutes: mins,
+                asString: (hrs < 10 ? "0" : "") + hrs 
+                    + (withSeconds ? ":" : " ")
+                    + (mins < 10 ? "0" : "") + mins 
+            };
             return result;
         }
     };
@@ -75,10 +77,15 @@ $(document).ready(function() {
         callback();
         window.setInterval(callback, 2000);
     })(function() {
-        $("#span-time").text(state.formatTime(new Date(), true));
+        var time = state.formatTime(new Date(), true);
+        $("#span-time-hr").text(time.hours);
+        $("#span-time-mi").text(time.minutes);
+        $("#span-time-dt").toggleClass("active");
         window.setTimeout(function() {
-            $("#span-time").text(state.formatTime(new Date(), false));
-        }, 500);
+            $("#span-time-hr").text(time.hours);
+            $("#span-time-mi").text(time.minutes);
+            $("#span-time-dt").toggleClass("active");
+        }, 1000);
     });
 
     // SENSORS DATA
@@ -102,7 +109,7 @@ $(document).ready(function() {
                     var last = state.last();
                     // UPDATE NUMS
                     if (last) {
-                        $("#span-updt").text(state.formatTime(new Date(last.date * 1000), true));
+                        $("#span-updt").text(state.formatTime(new Date(last.date * 1000), true).asString);
                         $("#span-temp").text(last.temp).css("color", settings.getColor(last.temp, settings.temp));
                         $("#span-humi").text(last.humi).css("color", settings.getColor(last.humi, settings.humi));
                         $("#span-cdio").text(last.cdio).css("color", settings.getColor(last.cdio, settings.cdio));
