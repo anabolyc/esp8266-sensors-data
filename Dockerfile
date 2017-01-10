@@ -18,10 +18,9 @@ COPY ./start.sh /usr/sbin/start.sh
 RUN mkdir -p /www/static
 COPY ./www/server.js /www/
 COPY ./www/package.json /www/
-COPY ./www/static /www/static
-
 WORKDIR /www
 RUN npm install
+COPY ./www/static /www/static
 
 # cleanup
 RUN apt-get purge python build-essential -y
