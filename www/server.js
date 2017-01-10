@@ -4,14 +4,19 @@ var db      = new sqlite3.Database('../data/data.db');
 var express = require('express');
 var app     = express();
 
+var sqlTmpl = "select cast(frame * 60 as INT) as date, temp, humi, cdio" +
+              " from (" +
+              "     select frame, avg(temp) as temp, avg(humi) as humi, avg(cdio) as cdio" +
+              "     from (" +
+              "         select round(strftime('%s', date) / 60.0) as frame, * " +
+              "         from sensors_data" +
+              "     ) x" +
+              "     group by frame" +
+              " ) x";
+
 app.get('/data', function(req, res) {
     var startDate = req.query.from;
-    // console.log(startDate);
-    var sql = "SELECT CAST(strftime('%s', date) as INT) as date, temp, humi, cdio" 
-	+ " FROM sensors_data " 
-	+ (startDate ? (" WHERE CAST(strftime('%s', date) AS INT) > " + startDate) : "")
-	+ " ORDER BY date";
-    // console.log(sql);
+    var sql = sqlTmpl + (startDate ? (" WHERE date > " + startDate) : "") + " ORDER BY date";
     db.all(sql, function(err, rows) {
         res.json(rows);
     });
