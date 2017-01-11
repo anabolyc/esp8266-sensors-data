@@ -61,8 +61,8 @@ $(document).ready(function() {
     var chartOptions = {
         chart: {
             type: "spline",
-            backgroundColor: "black",
-            animation: false
+            backgroundColor: "black"
+            //animation: false
         },
         title: { 
             text: '',
@@ -159,9 +159,10 @@ $(document).ready(function() {
             url: "/data?from=" + state.lastdate(),
             success: function(data) {
                 // CHANGE SCALE
-                if (state.scaleIndex == state.scales.length)
+                var scales = state.scales();
+                if (state.scaleIndex == scales.length)
                     state.scaleIndex = 0;
-                var minScale = state.scales()[state.scaleIndex++];
+                var minScale = scales[state.scaleIndex++];
                 state.charts.forEach(function(chart) {
                     chart.setTitle({text: minScale[0]});
                     chart.xAxis[0].setExtremes(minScale[1], null);
@@ -196,9 +197,6 @@ $(document).ready(function() {
                             settings.getColor(last.humi, settings.humi),
                             settings.getColor(last.cdio, settings.cdio)
                         ];
-                        
-                        if (shiftPoints > 0)
-                            console.log("shiftPoints", shiftPoints);
 
                         state.updateCharts(colors,  
                             state.data.filter(function(point) {
