@@ -1,15 +1,31 @@
-// TODO: filter last 24 hrs
 $(document).ready(function() {
+    Date.prototype.minus = function(amount) {
+        this.setDate(this.getDate() - amount);
+        return this;
+    };
+
+    var config = {
+        dataUpdateInterval: 10000,
+        timeUpdateInterval: 1000,
+        getMinDate: function() {
+            return (new Date()).minus(1);
+        }
+    };
+
     var state = {
         data: [],
         charts: [],
+        scaleIndex: 0,
+        scales: function() {
+            return [
+                ['24 HRS', (new Date()).minus(1 / 1)], 
+                ['12 HRS', (new Date()).minus(1 / 2)], 
+                ['6 HRS', (new Date()).minus(1 / 4)], 
+                ['2 HRS', (new Date()).minus(1 / 12)], 
+            ];
+        },
         last: function() {
             return this.data.length > 0 ? this.data[this.data.length - 1] : null;
-        },
-        getMinDate: function() {
-            var d = new Date();
-            d.setDate(d.getDate() - 1);
-            return d;
         },
         lastdate: function() {
             return (this.last() || { date: 0 }).date;
@@ -25,15 +41,34 @@ $(document).ready(function() {
                     + (mins < 10 ? "0" : "") + mins 
             };
             return result;
+        },
+        updateCharts: function(colors, data, shiftPoints) {
+            state.charts.forEach(function(chart, index) {
+                var shifts = shiftPoints;
+                chart.series[0].color = colors[index];
+                data.forEach(function(point, pointIndex) {
+                    var isShift = shifts-- > 0;
+                    chart.series[0].addPoint(
+                        [ point.date, point.values[index] ], 
+                        pointIndex == data.length - 1,
+                        isShift
+                    );    
+                });
+            });
         }
     };
 
     var chartOptions = {
         chart: {
             type: "spline",
-            backgroundColor: "black"
+            backgroundColor: "black",
+            animation: false
         },
-        title: { text: '' },
+        title: { 
+            text: '',
+            y: 15,
+            floating: true
+        },
         legend: { enabled: false },
         yAxis: { 
             title: { text: '' },
@@ -59,8 +94,8 @@ $(document).ready(function() {
         },
         cdio: {
             min: 0,
-            max: 400,
-            colors: ["#7c0101", "#555", "#013fa3"]
+            max: 800,
+            colors: ["#555", "#013fa3", "#7c0101"]
         },
         getColor: function(value, settings) {
             if (value < settings.min)
@@ -85,74 +120,96 @@ $(document).ready(function() {
             $("#span-time-hr").text(time.hours);
             $("#span-time-mi").text(time.minutes);
             $("#span-time-dt").toggleClass("active");
-        }, 1000);
+        }, config.timeUpdateInterval);
     });
 
     // SENSORS DATA
-    (function (callback) {
+    (function (init, callback) {
+        init()
         callback();
-        window.setInterval(callback, 60000);
+        window.setInterval(callback, config.dataUpdateInterval);
     })(function() {
+        state.charts = [
+            Highcharts.chart('chart-temp', $.extend(chartOptions, {
+                series: [{
+                    name: "TEMP",
+                    animation: false,
+                    marker: false
+                }]
+            })),
+            Highcharts.chart('chart-humi', $.extend(chartOptions, {
+                series: [{
+                    type: "spline",
+                    name: "HUMI",
+                    animation: false,
+                    marker: false
+                }]
+            })),
+            Highcharts.chart('chart-cdio', $.extend(chartOptions, {
+                series: [{
+                    type: "spline",
+                    name: "CDIO",
+                    animation: false,
+                    marker: false
+                }]
+            }))
+        ];
+    }, function() {
         $.getJSON({
             url: "/data?from=" + state.lastdate(),
             success: function(data) {
+                // CHANGE SCALE
+                if (state.scaleIndex == state.scales.length)
+                    state.scaleIndex = 0;
+                var minScale = state.scales()[state.scaleIndex++];
+                state.charts.forEach(function(chart) {
+                    chart.setTitle({text: minScale[0]});
+                    chart.xAxis[0].setExtremes(minScale[1], null);
+                });
+
                 if (data.length > 0) {
+                    var prevLastDate = state.lastdate()
                     // ADD NEW DATA
                     for (var i = 0; i < data.length; i++) {
                         state.data.push(data[i]);
                     }
-                    // DELETE POINTS OLDER THAN 24 HRS
-                    var minDate = state.getMinDate();
-                    while(new Date(state.data[0].date * 1000) < minDate)
+
+                    // DELETE OLD POINTS
+                    var minDate = config.getMinDate();
+                    var shiftPoints = 0;
+                    while(new Date(state.data[0].date * 1000) < minDate) {
                         state.data.shift();
+                        shiftPoints++;
+                    }
 
                     var last = state.last();
-                    // UPDATE NUMS
                     if (last) {
+                        // UPDATE NUMS
                         $("#span-updt").text(state.formatTime(new Date(last.date * 1000), true).asString);
                         $("#span-temp").text(Math.round(last.temp)).css("color", settings.getColor(last.temp, settings.temp));
                         $("#span-humi").text(Math.round(last.humi)).css("color", settings.getColor(last.humi, settings.humi));
                         $("#span-cdio").text(Math.round(last.cdio)).css("color", settings.getColor(last.cdio, settings.cdio));
-                    }
+                        
+                        // UPDATE CHARTS
+                        var colors = [
+                            settings.getColor(last.temp, settings.temp),
+                            settings.getColor(last.humi, settings.humi),
+                            settings.getColor(last.cdio, settings.cdio)
+                        ];
+                        
+                        if (shiftPoints > 0)
+                            console.log("shiftPoints", shiftPoints);
 
-                    // UPDATE CHARTS
-                    state.charts = [
-                        Highcharts.chart('chart-temp', $.extend(chartOptions, {
-                            series: [{
-                                name: "TEMP",
-                                color: settings.getColor(last.temp, settings.temp),
-                                animation: false,
-                                marker: false,
-                                data: state.data.map(function(point){ 
-                                    return [point.date * 1000, point.temp]; 
-                                })
-                            }]
-                        })),
-                        Highcharts.chart('chart-humi', $.extend(chartOptions, {
-                            series: [{
-                                type: "spline",
-                                name: "HUMI",
-                                color: settings.getColor(last.humi, settings.humi),
-                                animation: false,
-                                marker: false,
-                                data: state.data.map(function(point){ 
-                                    return [point.date * 1000, point.humi]; 
-                                })
-                            }]
-                        })),
-                        Highcharts.chart('chart-cdio', $.extend(chartOptions, {
-                            series: [{
-                                type: "spline",
-                                name: "CDIO",
-                                color: settings.getColor(last.cdio, settings.cdio),
-                                animation: false,
-                                marker: false,
-                                data: state.data.map(function(point){ 
-                                    return [point.date * 1000, point.cdio]; 
-                                })
-                            }]
-                        }))
-                    ];
+                        state.updateCharts(colors,  
+                            state.data.filter(function(point) {
+                                return point.date > prevLastDate;
+                            }).map(function(point) { 
+                                return {date: point.date * 1000, values: [point.temp, point.humi, point.cdio]}; 
+                            }),
+                            // first data load: no need to shift data
+                            prevLastDate == 0 ? 0 : shiftPoints
+                        );
+                    }
                 }
             }
         })

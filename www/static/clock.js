@@ -23,11 +23,11 @@ $(document).ready(function () {
             for (var k = 0; k < elements.length; k++) {
                 elements[k].style.webkitTransform = 'rotateZ('+ hands[j].angle +'deg)';
                 elements[k].style.transform = 'rotateZ('+ hands[j].angle +'deg)';
-                if (hands[j].hand === 'minutes')  elements[k].parentNode.setAttribute('data-second-angle', hands[j + 1].angle);
+                if (hands[j].hand === 'minutes')  
+                    elements[k].parentNode.setAttribute('data-second-angle', hands[j + 1].angle);
             }
         }
     };
     
     window.setInterval(updateClock, 1000);
-    
 });
