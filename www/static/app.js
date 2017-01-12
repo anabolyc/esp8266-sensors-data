@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
     Date.prototype.minus = function(amount) {
         this.setDate(this.getDate() - amount);
         return this;
@@ -15,7 +16,7 @@ $(document).ready(function() {
     var state = {
         data: [],
         charts: [],
-        scaleIndex: 0,
+        scaleIndex: 2,
         scales: function() {
             return [
                 ['24 HRS', (new Date()).minus(1 / 1)], 
@@ -43,6 +44,7 @@ $(document).ready(function() {
             return result;
         },
         updateCharts: function(colors, data, shiftPoints) {
+            console.log("update charts: ", data.length, "new points; ", shiftPoints, " ponts to remove;");
             state.charts.forEach(function(chart, index) {
                 var shifts = shiftPoints;
                 chart.series[0].color = colors[index];
@@ -61,8 +63,8 @@ $(document).ready(function() {
     var chartOptions = {
         chart: {
             type: "spline",
-            backgroundColor: "black"
-            //animation: false
+            backgroundColor: "black",
+            animation: false
         },
         title: { 
             text: '',
@@ -112,6 +114,7 @@ $(document).ready(function() {
         callback();
         window.setInterval(callback, 2000);
     })(function() {
+        console.time("updating digital clock;")
         var time = state.formatTime(new Date(), true);
         $("#span-time-hr").text(time.hours);
         $("#span-time-mi").text(time.minutes);
@@ -121,6 +124,7 @@ $(document).ready(function() {
             $("#span-time-mi").text(time.minutes);
             $("#span-time-dt").toggleClass("active");
         }, config.timeUpdateInterval);
+        console.timeEnd("updating digital clock;")
     });
 
     // SENSORS DATA
@@ -129,6 +133,7 @@ $(document).ready(function() {
         callback();
         window.setInterval(callback, config.dataUpdateInterval);
     })(function() {
+        console.log("initializing charts;");
         state.charts = [
             Highcharts.chart('chart-temp', $.extend(chartOptions, {
                 series: [{
@@ -155,20 +160,26 @@ $(document).ready(function() {
             }))
         ];
     }, function() {
+        console.log("sending data request;");
         $.getJSON({
             url: "/data?from=" + state.lastdate(),
             success: function(data) {
                 // CHANGE SCALE
+                console.log("data request done, updating scales;");
+                console.time("update scales");
                 var scales = state.scales();
                 if (state.scaleIndex == scales.length)
                     state.scaleIndex = 0;
                 var minScale = scales[state.scaleIndex++];
+                console.log("setting scales to", minScale[0]);
                 state.charts.forEach(function(chart) {
                     chart.setTitle({text: minScale[0]});
                     chart.xAxis[0].setExtremes(minScale[1], null);
                 });
+                console.timeEnd("update scales");
 
                 if (data.length > 0) {
+                    console.log("new data points: ", data.length);
                     var prevLastDate = state.lastdate()
                     // ADD NEW DATA
                     for (var i = 0; i < data.length; i++) {
@@ -186,12 +197,15 @@ $(document).ready(function() {
                     var last = state.last();
                     if (last) {
                         // UPDATE NUMS
+                        console.log("updating numbers;");
                         $("#span-updt").text(state.formatTime(new Date(last.date * 1000), true).asString);
                         $("#span-temp").text(Math.round(last.temp)).css("color", settings.getColor(last.temp, settings.temp));
                         $("#span-humi").text(Math.round(last.humi)).css("color", settings.getColor(last.humi, settings.humi));
                         $("#span-cdio").text(Math.round(last.cdio)).css("color", settings.getColor(last.cdio, settings.cdio));
                         
                         // UPDATE CHARTS
+                        console.log("updating charts;");
+                        console.time("update charts");
                         var colors = [
                             settings.getColor(last.temp, settings.temp),
                             settings.getColor(last.humi, settings.humi),
@@ -207,6 +221,7 @@ $(document).ready(function() {
                             // first data load: no need to shift data
                             prevLastDate == 0 ? 0 : shiftPoints
                         );
+                        console.timeEnd("update charts");
                     }
                 }
             }

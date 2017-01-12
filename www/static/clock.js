@@ -1,5 +1,6 @@
 $(document).ready(function () {
     var updateClock = function() {
+        console.time("updating analog clock;")
         var date = new Date;
         var seconds = date.getSeconds();
         var minutes = date.getMinutes();
@@ -27,7 +28,9 @@ $(document).ready(function () {
                     elements[k].parentNode.setAttribute('data-second-angle', hands[j + 1].angle);
             }
         }
+        console.timeEnd("updating analog clock;")
     };
     
-    window.setInterval(updateClock, 1000);
+    updateClock();
+    // window.setInterval(updateClock, 1000);
 });

@@ -10,7 +10,7 @@ body {
   height: 20em;
   position: relative;
   width: 20em;
-  margin-top: 4em;
+  margin-top: 2em;
 }
 
 .clock.simple:after {
@@ -73,10 +73,10 @@ body {
   }
 }
 
-/*  My device is not supporting that 
+/*  My device is not supporting that  */
 
 .hours-container   {  animation: rotate 43200s infinite linear; }
 .minutes-container {  animation: rotate 3600s infinite linear; }
 .seconds-container {  animation: rotate 60s infinite steps(60); }
 
-*/
+/* */
