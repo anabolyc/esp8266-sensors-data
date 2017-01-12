@@ -18,12 +18,14 @@ COPY ./www/server.js /www/
 COPY ./www/package.json /www/
 WORKDIR /www
 RUN npm install
-COPY ./www/static /www/static
 
 # cleanup
 RUN apt-get purge python build-essential -y
 RUN apt-get autoremove -y
 RUN rm -rf /var/lib/apt/lists/*
+
+# static site data
+COPY ./www/static /www/static
 
 EXPOSE 5000
 CMD start.sh
