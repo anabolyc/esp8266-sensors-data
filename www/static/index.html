@@ -14,10 +14,10 @@
 
 <body>
 	<div class="row text-center clock-row">
-		<div class="col-sm-8 div-time">
+		<div class="col-sm-8 col-xs-12 div-time">
             <span id="span-time-hr">HH</span><span id="span-time-dt">.</span><span id="span-time-mi">MM</span>
 		</div>
-        <div class="col-sm-4">
+        <div class="col-sm-4 col-xs-12 text-center">
 			<article class="clock simple ">
                 <div class="hours-container">
                     <div class="hours"></div>
@@ -32,23 +32,17 @@
 		</div>
 	</div>
 	<div class="row text-center div-nums">
-		<div class="col-sm-4">
-			<small><i class="glyphicon glyphicon-certificate"></i></small>
-			<span id="span-temp">TEMP</span>
-			<small>&#8451;</small>
+		<div class="col-sm-4 col-xs-12">
+			<span><small><i class="glyphicon glyphicon-certificate"></i></small><span class="span-value" id="span-temp">TEMP</span></span><small>&#8451;</small>
 		</div>
-		<div class="col-sm-4">
-			<small><i class="glyphicon glyphicon-tint"></i></small>
-			<span id="span-humi">HUMIDITY</span>
-			<small>%</small>
+		<div class="col-sm-4 col-xs-12">
+			<span><small><i class="glyphicon glyphicon-tint"></i></small><span class="span-value" id="span-humi">HUMIDITY</span></span><small>%</small>
 		</div>
-		<div class="col-sm-4">
-			<small><i class="glyphicon glyphicon-tree-conifer"></i></small>
-			<span id="span-cdio">CO2</span>
-			<small>ppm</small>
+		<div class="col-sm-4 col-xs-12">
+			<span><small><i class="glyphicon glyphicon-tree-conifer"></i></small><span class="span-value" id="span-cdio">CO2</span></span><small>ppm</small>
 		</div>
 	</div>
-	<div class="row text-center div-charts">
+	<div class="row text-center hidden-xs div-charts">
 		<div class="col-sm-4">	
 			<div class="div-chart" id="chart-temp"></div>
 		</div>
@@ -60,7 +54,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-12 text-center">	
+		<div class="col-sm-12 col-xs-12 text-center">	
 			<small>Updated</small>
 			<span id="span-updt"></span>
 		</div>

@@ -9,6 +9,12 @@ body {
     white-space: nowrap;
 }
 
+@media screen and (max-width: 768px) {
+    .div-time {
+        font-size: 10em;
+    }   
+}
+
 #span-time-dt {
     font-size: 50%;
     color: #222;
@@ -25,7 +31,6 @@ body {
 
 .div-nums small {
     font-size: 60%;
-    color: #555;
 }
 
 .div-chart {
@@ -35,4 +40,8 @@ body {
 
 .clock-row {
     line-height: initial;
+}
+
+.span-value {
+    margin: 0 0.2em 0 0.1em;
 }

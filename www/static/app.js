@@ -1,3 +1,14 @@
+// DEBUG
+/*
+var getRandomColor = function() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}; */
+
 $(document).ready(function() {
 
     Date.prototype.minus = function(amount) {
@@ -6,6 +17,7 @@ $(document).ready(function() {
     };
 
     var config = {
+        // DEBUG!!
         dataUpdateInterval: 10000,
         timeUpdateInterval: 1000,
         getMinDate: function() {
@@ -47,14 +59,21 @@ $(document).ready(function() {
             console.log("update charts: ", data.length, "new points; ", shiftPoints, " ponts to remove;");
             state.charts.forEach(function(chart, index) {
                 var shifts = shiftPoints;
-                chart.series[0].color = colors[index];
+
+                chart.series[0].options.color = colors[index];
+                chart.series[0].update(chart.series[0].options);
+
                 data.forEach(function(point, pointIndex) {
                     var isShift = shifts-- > 0;
-                    chart.series[0].addPoint(
-                        [ point.date, point.values[index] ], 
-                        pointIndex == data.length - 1,
-                        isShift
-                    );    
+                    var existing = chart.series[0].data.find(function(point0) { return point0.x == point.date; });
+                    if (existing)
+                        existing.update({x: point.date, y: point.values[index]});
+                    else
+                        chart.series[0].addPoint(
+                            [ point.date, point.values[index] ], 
+                            pointIndex == data.length - 1,
+                            isShift
+                        );    
                 });
             });
         }
@@ -87,17 +106,17 @@ $(document).ready(function() {
         temp: {
             min: 17,
             max: 20,
-            colors: ["#013fa3", "#555", "#7c0101"]
+            colors: ["#013fa3", "#008954", "#7c0101"]
         }, 
         humi: {
             min: 30,
             max: 80,
-            colors: ["#7c0101", "#555", "#013fa3"]
+            colors: ["#7c0101", "#008954", "#013fa3"]
         },
         cdio: {
-            min: 0,
-            max: 800,
-            colors: ["#555", "#013fa3", "#7c0101"]
+            min: 300,
+            max: 1000,
+            colors: ["#013fa3", "#008954", "#7c0101"]
         },
         getColor: function(value, settings) {
             if (value < settings.min)
@@ -162,7 +181,7 @@ $(document).ready(function() {
     }, function() {
         console.log("sending data request;");
         $.getJSON({
-            url: "/data?from=" + state.lastdate(),
+            url: "/data?from=" + (state.lastdate() - 1),
             success: function(data) {
                 // CHANGE SCALE
                 console.log("data request done, updating scales;");
@@ -183,7 +202,11 @@ $(document).ready(function() {
                     var prevLastDate = state.lastdate()
                     // ADD NEW DATA
                     for (var i = 0; i < data.length; i++) {
-                        state.data.push(data[i]);
+                        var existing = state.data.find(function(item) {return item.date == data[i].date; });
+                        if (existing)
+                            existing = data[i];
+                        else
+                            state.data.push(data[i]);
                     }
 
                     // DELETE OLD POINTS
@@ -199,9 +222,9 @@ $(document).ready(function() {
                         // UPDATE NUMS
                         console.log("updating numbers;");
                         $("#span-updt").text(state.formatTime(new Date(last.date * 1000), true).asString);
-                        $("#span-temp").text(Math.round(last.temp)).css("color", settings.getColor(last.temp, settings.temp));
-                        $("#span-humi").text(Math.round(last.humi)).css("color", settings.getColor(last.humi, settings.humi));
-                        $("#span-cdio").text(Math.round(last.cdio)).css("color", settings.getColor(last.cdio, settings.cdio));
+                        $("#span-temp").text(Math.round(last.temp)).parent().css("color", settings.getColor(last.temp, settings.temp));
+                        $("#span-humi").text(Math.round(last.humi)).parent().css("color", settings.getColor(last.humi, settings.humi));
+                        $("#span-cdio").text(Math.round(last.cdio)).parent().css("color", settings.getColor(last.cdio, settings.cdio));
                         
                         // UPDATE CHARTS
                         console.log("updating charts;");
@@ -211,10 +234,19 @@ $(document).ready(function() {
                             settings.getColor(last.humi, settings.humi),
                             settings.getColor(last.cdio, settings.cdio)
                         ];
+                        // DEBUG
+                        var getRandomColor = function() {
+                            var letters = '0123456789ABCDEF';
+                            var color = '#';
+                            for (var i = 0; i < 6; i++ ) {
+                                color += letters[Math.floor(Math.random() * 16)];
+                            }
+                            return color;
+                        };
 
                         state.updateCharts(colors,  
                             state.data.filter(function(point) {
-                                return point.date > prevLastDate;
+                                return point.date >= prevLastDate;
                             }).map(function(point) { 
                                 return {date: point.date * 1000, values: [point.temp, point.humi, point.cdio]}; 
                             }),
