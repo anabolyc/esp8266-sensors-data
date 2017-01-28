@@ -35,7 +35,11 @@ var sqlTmpl = { dataavg:
                     isFirstRow = false;
                 else
                     res.write(",");
-                res.write(JSON.stringify(rows));
+                var rowJson = JSON.stringify(rows);
+                if (rowJson)
+                    res.write(rowJson);
+                else 
+                    console.log("WARN: row strangely not stringified", rows);
             }, function(err, rowsCount) {
                 var end = new Date().valueOf();
                 console.log("Request (from = " + from + ") finished in " + (end - start) + " ms. Number of rows:", rowsCount);
