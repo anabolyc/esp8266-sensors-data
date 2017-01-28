@@ -1,6 +1,6 @@
 var sqlite3 = require('sqlite3').verbose();
 var path    = require('path');
-var db      = new sqlite3.Database('../data/data.db');
+var db      = new sqlite3.Database('../data/data.db', sqlite3.OPEN_READONLY);
 var express = require('express');
 var app     = express();
 
@@ -24,9 +24,23 @@ var sqlTmpl = { dataavg:
 (function() {
     var getDbData = function(sql) {
         return function(req, res) {
+            var start = new Date().valueOf();
             var from = req.query.from || 0;
-            db.all(sql.replace("%from", from), function(err, rows) {
-                res.json(rows);
+            var isFirstRow = true;
+            
+            res.append("Content-Type", "application/json; charset=utf-8");
+            res.write("[");
+            db.each(sql.replace("%from", from), function(err, rows) {
+                if (isFirstRow)
+                    isFirstRow = false;
+                else
+                    res.write(",");
+                res.write(JSON.stringify(rows));
+            }, function(err, rowsCount) {
+                var end = new Date().valueOf();
+                console.log("Request (from = " + from + ") finished in " + (end - start) + " ms. Number of rows:", rowsCount);
+                res.write("]");
+                res.end();
             });
         };
     };
