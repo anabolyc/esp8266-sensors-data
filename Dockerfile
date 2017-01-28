@@ -14,7 +14,6 @@ COPY ./start.sh /usr/sbin/start.sh
 
 # www
 RUN mkdir -p /www/static
-COPY ./www/server.js /www/
 COPY ./www/package.json /www/
 WORKDIR /www
 RUN npm install
@@ -24,7 +23,9 @@ RUN apt-get purge python build-essential -y
 RUN apt-get autoremove -y
 RUN rm -rf /var/lib/apt/lists/*
 
-# static site data
+# site data 
+# at later step to optimize build
+COPY ./www/server.js /www/
 COPY ./www/static /www/static
 
 EXPOSE 5000
