@@ -1,4 +1,16 @@
 $(document).ready(function () {
+    var getSupportedTransform = function () {
+        var prefixes = 'animation'.split(' ');
+        var div = document.createElement('div');
+        for(var i = 0; i < prefixes.length; i++) {
+            if(div && div.style[prefixes[i]] !== undefined) {
+                return prefixes[i];
+            }
+        }
+        return false;
+    };
+    console.log(getSupportedTransform());
+
     var updateClock = function() {
         console.time("updating analog clock;")
         var date = new Date;
@@ -32,5 +44,10 @@ $(document).ready(function () {
     };
     
     updateClock();
-    // window.setInterval(updateClock, 1000);
+    if (!getSupportedTransform()) {
+        console.log("animation is not supported, starting clock update using js");
+        window.setInterval(updateClock, 1000);
+    }
+    // 
 });
+

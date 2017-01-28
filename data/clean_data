@@ -1,0 +1,22 @@
+#!/bin/bash
+
+db= range=
+
+while getopts r:d: opt; do
+  case $opt in
+  r)
+      range=$OPTARG
+      ;;
+  d)
+      db=$OPTARG
+      ;;
+  esac
+done
+
+shift $((OPTIND - 1))
+
+sql="DELETE from sensors_data where date < DATETIME(CURRENT_TIMESTAMP, '$range')"
+
+#echo 'sql:' $sql
+sqlite3 $db "$sql"
+

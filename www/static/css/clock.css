@@ -1,11 +1,7 @@
-body {
-    background-color: black;
-} 
-
 .clock {
   border: 1px solid #ccc;
   border-radius: 50%;
-  background: black url(ios_clock.svg) no-repeat center;
+  background: url(ios_clock.svg) no-repeat center;
   background-size: 88%;
   height: 20em;
   position: relative;
@@ -59,7 +55,7 @@ body {
 }
 
 .seconds {
-  background: #555;
+  background: #A33;
   height: 45%;
   left: 49.5%;
   position: absolute;
@@ -75,10 +71,15 @@ body {
   }
 }
 
-/*  My device is not supporting that  */
-
-.hours-container   {  animation: rotate 43200s infinite linear; }
-.minutes-container {  animation: rotate 3600s infinite linear; }
-.seconds-container {  animation: rotate 60s infinite steps(60); }
-
-/* */
+.hours-container   {  
+  animation: rotate 43200s infinite linear; 
+  -webkit-animation: rotate 43200s infinite linear;
+}
+.minutes-container {  
+  animation: rotate 3600s infinite linear; 
+  -webkit-animation: rotate 3600s infinite linear; 
+}
+.seconds-container {  
+  -webkit-animation: rotate 60s infinite steps(60);
+  animation: rotate 60s infinite steps(60);
+}

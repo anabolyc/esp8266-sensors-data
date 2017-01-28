@@ -2,13 +2,15 @@
 <html lang="en">
 
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/amcharts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/serial.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/amcharts/3.13.0/xy.js"></script>
 
 <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:300" rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-<link rel="stylesheet" href="site.css">
-<link rel="stylesheet" href="clock.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/clock.css">
 
 <link rel="icon" type="image/png" href="favicon.png" />
 
@@ -45,22 +47,32 @@
 	<div class="row text-center hidden-xs div-charts">
 		<div class="col-sm-4">	
 			<div class="div-chart" id="chart-temp"></div>
+			<div class="div-chart-title"></div>
 		</div>
 		<div class="col-sm-4">	
 			<div class="div-chart" id="chart-humi"></div>
+			<div class="div-chart-title"></div>
 		</div>
 		<div class="col-sm-4">	
 			<div class="div-chart" id="chart-cdio"></div>
+			<div class="div-chart-title"></div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row div-footer">
 		<div class="col-sm-12 col-xs-12 text-center">	
 			<small>Updated</small>
 			<span id="span-updt"></span>
 		</div>
 	</div>
 
-	<script src="app.js"></script>
-    <script src="clock.js"></script>
+	<script type="application/javascript" src="js/digital-clock.js"></script>
+	<script type="application/javascript" src="js/tools.js"></script>
+	<script type="application/javascript" src="js/application.js"></script>
+	<script type="application/javascript" src="js/app.js"></script>
+    <script type="application/javascript" src="js/clock.js"></script>
+	<!--
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<script type="application/javascript" src="js/bg.js"></script>
+	-->
 </body>
 </html>
