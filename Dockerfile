@@ -10,6 +10,7 @@ COPY ./data/db.sql /var/db.sql
 
 # data script
 COPY ./data/request_data /usr/sbin/request_data
+COPY ./data/clean_data /usr/sbin/clean_data
 COPY ./start.sh /usr/sbin/start.sh
 
 # www
