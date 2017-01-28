@@ -71,9 +71,9 @@ $(document).ready(function() {
                     var grey = $("#span-updt").css("color");
                     updateNumbers(numSpans, 
                         [   new Date(last.date * 1000).formatTime(true).asString, 
-                            Math.round(last.temp), 
-                            Math.round(last.humi), 
-                            Math.round(last.cdio)
+                            Math.round(last.values[0]), 
+                            Math.round(last.values[1]), 
+                            Math.round(last.values[2])
                         ], [ grey, grey, grey, grey]
                     ); 
                 }
