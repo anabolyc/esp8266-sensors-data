@@ -24,6 +24,9 @@ RUN apt-get purge python build-essential -y
 RUN apt-get autoremove -y
 RUN rm -rf /var/lib/apt/lists/*
 
+# db folder
+RUN mkdir /data
+
 # site data 
 # at later step to optimize build
 COPY ./www/server.js /www/
