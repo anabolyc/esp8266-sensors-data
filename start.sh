@@ -10,7 +10,7 @@ fi
 echo "Starting data update every 10 seconds"
 while true
 do
-	timeout -sHUP 1m request_data -d /data/data.db -u http://192.168.1.90:8080/data &
+	timeout -sHUP 1m request_data -d /data/data.db -u http://192.168.1.90:8080/data
 	sleep 10
 done &
 

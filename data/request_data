@@ -19,7 +19,7 @@ response=$(curl -s $url)
 
 error=$(echo "$response" | jq -r '.error')
 
-echo $(date) "response: " "$response"
+echo $(date) "response from " "$url" ": " "$response"
 
 if [ "$error" = 'null' ];
 then
