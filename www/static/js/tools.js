@@ -25,9 +25,9 @@ Date.prototype.formatTime = function(withSeconds) {
     var hrs = this.getHours();
     var mins = this.getMinutes()
     var result =  {
-        hours: (hrs < 10 ? "0" : "") + hrs,
+        hours: hrs,
         minutes: (mins < 10 ? "0" : "") + mins,
-        asString: (hrs < 10 ? "0" : "") + hrs 
+        asString: hrs 
             + (withSeconds ? ":" : " ")
             + (mins < 10 ? "0" : "") + mins 
     };

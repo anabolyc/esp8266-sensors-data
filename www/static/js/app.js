@@ -47,7 +47,7 @@ $(document).ready(function() {
                         }
                     }));
 
-                    last = app.last();
+                    var last = app.last();
                     if (last) {
                         // UPDATE NUMS
                         updateNumbers(numSpans, 
@@ -67,7 +67,8 @@ $(document).ready(function() {
                 // UPDATE CHARTS
                 app.updateCharts();
                 // Check if data not too old
-                if (new Date().valueOf() - last.date * 1000 > 1000 * 60 * 10) {
+                var last = app.last();
+                if (last && new Date().valueOf() - last.date * 1000 > 1000 * 60 * 10) {
                     var grey = $("#span-updt").css("color");
                     updateNumbers(numSpans, 
                         [   new Date(last.date * 1000).formatTime(true).asString, 
@@ -87,10 +88,10 @@ $(document).ready(function() {
             chartPlaceholders: ["chart-temp", "chart-humi", "chart-cdio"],
             scales: function() {
                 return [ 
-                    [24, new Date().add(-1 / 1), 8], 
-                    [12, new Date().add(-1 / 2), 6], 
-                    [6 , new Date().add(-1 / 4), 4],  
-                    [2 , new Date().add(-1 / 12), 2]
+                    [24, new Date().add(-1 / 1), 16], 
+                    [12, new Date().add(-1 / 2), 12], 
+                    [6 , new Date().add(-1 / 4), 8],  
+                    [2 , new Date().add(-1 / 12), 4]
                 ];
             },
             scalesCallback: function(value) {
