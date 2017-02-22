@@ -32,6 +32,8 @@ RUN mkdir /data
 COPY ./www/server.js /www/
 COPY ./www/static /www/static
 
+ENV ESP_ADDR http://localhost:8080/data
+
 EXPOSE 5000
 CMD start.sh
 
