@@ -8,6 +8,7 @@ CREATE TABLE sensors_data (
 	temp real null,
 	humi real null,
 	cdio real null,
+	pres real null,
 	PRIMARY KEY (date ASC)
 );
 

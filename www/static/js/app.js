@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var last;
-    var numSpans = [$("#span-updt"), $("#span-temp"),$("#span-humi"), $("#span-cdio")];
+    var numSpans = [$("#span-updt"), $("#span-temp"),$("#span-humi"), $("#span-cdio"), $("#span-pres")];
     var colorSettings = {
         items: [{
             min: 17,
@@ -14,7 +14,11 @@ $(document).ready(function() {
             min: 300,
             max: 1000,
             colors: ["#013fa3", "#008954", "#7c0101"]
-        }],
+        }, {
+	    min: 740,
+	    max: 765,
+	    colors: ["#013fa3", "#008954", "#7c0101"]
+	}],
         getColor: function(value, settings) {
             if (value < settings.min)
                 return settings.colors[0];
@@ -43,25 +47,20 @@ $(document).ready(function() {
                     app.addData(data.map(function(item) {
                         return {
                             date: item.date,
-                            values: [item.temp, item.humi, item.cdio]
+                            values: [item.temp, item.humi, item.cdio, item.pres * 0.00075]
                         }
                     }));
 
                     var last = app.last();
                     if (last) {
                         // UPDATE NUMS
-                        updateNumbers(numSpans, 
-                            [   new Date(last.date * 1000).formatTime(true).asString, 
-                                Math.round(last.values[0]), 
-                                Math.round(last.values[1]), 
-                                Math.round(last.values[2])
-                            ], [
-                                $("#span-updt").css("color"),
-                                colorSettings.getColor(last.values[0], colorSettings.items[0]),
-                                colorSettings.getColor(last.values[1], colorSettings.items[1]),
-                                colorSettings.getColor(last.values[2], colorSettings.items[2])
-                            ]
-                        );
+			var values = [ new Date(last.date * 1000).formatTime(true).asString ];
+			var colors = [ $("#span-updt").css("color") ];
+			last.values.forEach(function(x, index) { 
+				values.push(Math.round(x)); 
+				colors.push(colorSettings.getColor(x, colorSettings.items[index]));
+			});
+                        updateNumbers(numSpans, values, colors);
                     }
                 }
                 // UPDATE CHARTS
@@ -70,13 +69,13 @@ $(document).ready(function() {
                 var last = app.last();
                 if (last && new Date().valueOf() - last.date * 1000 > 1000 * 60 * 10) {
                     var grey = $("#span-updt").css("color");
-                    updateNumbers(numSpans, 
-                        [   new Date(last.date * 1000).formatTime(true).asString, 
-                            Math.round(last.values[0]), 
-                            Math.round(last.values[1]), 
-                            Math.round(last.values[2])
-                        ], [ grey, grey, grey, grey]
-                    ); 
+		    var values = [ new Date(last.date * 1000).formatTime(true).asString ];
+		    var colors = [ grey ];
+		    last.values.forEach(function(x) {
+			values.push(Math.round(x));
+			colors.push(grey);
+		    });
+                    updateNumbers(numSpans, values, colors); 
                 }
             }
         })
@@ -85,7 +84,7 @@ $(document).ready(function() {
     // SENSORS DATA
     (function (callback) {
         var app = new Application({
-            chartPlaceholders: ["chart-temp", "chart-humi", "chart-cdio"],
+            chartPlaceholders: ["chart-temp", "chart-humi", "chart-cdio", "chart-pres"],
             scales: function() {
                 return [ 
                     [24, new Date().add(-1 / 1), 16], 
@@ -95,7 +94,7 @@ $(document).ready(function() {
                 ];
             },
             scalesCallback: function(value) {
-                $(".div-chart-title").text(value + ' HRS');
+                $(".div-chart-title").text(value + 'h');
             },
             colorSettings: colorSettings.items,
             getChartOptions: function(colors) { return {

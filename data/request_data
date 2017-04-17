@@ -19,16 +19,17 @@ response=$(curl -s $url)
 
 error=$(echo "$response" | jq -r '.error')
 
-echo $(date) "response from " "$url" ": " "$response"
+#echo $(date) "response from " "$url" ": " "$response"
 
 if [ "$error" = 'null' ];
 then
 	temp=$(echo "$response" | jq -r '.temp')
 	humi=$(echo "$response" | jq -r '.humidity')
 	cdio=$(echo "$response" | jq -r '.cdio')
-	echo "temp = " "$temp" "; humidity = " "$humi" "; cdio = " "$cdio"
+	pres=$(echo "$response" | jq -r '.pressure')
+	echo "temp = " "$temp" "; humidity = " "$humi" "; cdio = " "$cdio" "; press = " "$pres"
 
-	sqlite3 $db "insert into sensors_data (date, temp, humi, cdio) values (CURRENT_TIMESTAMP, $temp, $humi, $cdio)"
+	sqlite3 $db "insert into sensors_data (date, temp, humi, cdio, pres) values (CURRENT_TIMESTAMP, $temp, $humi, $cdio, $pres)"
 else
 	echo "error: " "$error"
 fi

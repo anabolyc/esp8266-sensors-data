@@ -5,9 +5,9 @@ var express = require('express');
 var app     = express();
 
 var sqlTmpl = { dataavg: 
-                "SELECT CAST(frame * 60 AS INT) AS date, temp, humi, cdio " +
+                "SELECT CAST(frame * 60 AS INT) AS date, temp, humi, cdio, pres " +
                 "FROM ( " +
-                "     SELECT frame, avg(temp) as temp, avg(humi) as humi, avg(cdio) as cdio " +
+                "     SELECT frame, avg(temp/100.0) as temp, avg(humi) as humi, avg(cdio) as cdio, avg(pres) as pres " +
                 "     FROM (" +
                 "         SELECT round(strftime('%s', date) / 60.0) as frame, * " +
                 "         FROM sensors_data" +
@@ -17,7 +17,7 @@ var sqlTmpl = { dataavg:
                 "WHERE date > %from " + 
                 "ORDER BY date",
                 data: 
-                "SELECT CAST(strftime('%s', date) AS INT) AS date, NULLIF(temp, 0) AS temp, NULLIF(humi, 0) AS humi, NULLIF(cdio, 0) AS cdio " +
+                "SELECT CAST(strftime('%s', date) AS INT) AS date, NULLIF(temp/100.0, 0) AS temp, NULLIF(humi, 0) AS humi, NULLIF(cdio, 0) AS cdio, NULLIF(pres, 0) as pres " +
                 "FROM sensors_data " +
                 "WHERE CAST(strftime('%s', date) AS INT) > %from " + 
                 "ORDER BY date"};
