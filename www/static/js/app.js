@@ -5,19 +5,19 @@ $(document).ready(function() {
         items: [{
             min: 17,
             max: 20,
-            colors: ["#013fa3", "#008954", "#7c0101"]
+            colors: ["#013fa3", "#008954", "#9e0012"]
         }, {
             min: 30,
             max: 80,
-            colors: ["#7c0101", "#008954", "#013fa3"]
+            colors: ["#9e0012", "#008954", "#013fa3"]
         }, {
             min: 300,
             max: 1000,
-            colors: ["#013fa3", "#008954", "#7c0101"]
+            colors: ["#013fa3", "#008954", "#9e0012"]
         }, {
 	    min: 740,
 	    max: 765,
-	    colors: ["#013fa3", "#008954", "#7c0101"]
+	    colors: ["#013fa3", "#008954", "#013fa3"]
 	}],
         getColor: function(value, settings) {
             if (value < settings.min)

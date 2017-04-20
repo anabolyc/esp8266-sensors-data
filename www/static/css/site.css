@@ -67,3 +67,7 @@ body {
 a[title="JavaScript charts"] {
     display: none !important;
 }
+
+.div-charts div {
+	padding: 0;
+}
